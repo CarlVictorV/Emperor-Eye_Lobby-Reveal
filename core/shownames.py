@@ -181,3 +181,14 @@ async def connect(connection):
 
 
 connector.start()
+
+def check_lobby_exist(lcu_api,lcu_headers):
+    get_champ_select = lcu_api + '/lol-champ-select/v1/session'
+    r = requests.get(get_champ_select,
+                        headers=lcu_headers, verify=False)
+    r = json.loads(r.text)
+    if 'errorCode' in r:
+        checkForLobby = True
+        if showNotInChampSelect:
+            print('Not in champ select. Waiting for game...')
+            showNotInChampSelect = False
