@@ -12,7 +12,7 @@ import warnings
 warnings.filterwarnings('ignore')
 # global variables
 
-api_key = 'RGAPI-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+api_key = 'RGAPI-b98575b3-465f-49e0-9eba-8acc2c968108'
 watcher = LolWatcher(api_key)
 my_region = 'ph2'
 
@@ -90,7 +90,7 @@ async def connect(connection):
 
     global showNotInChampSelect
     try:
-        watcher.summoner.by_name(my_region, 'iiil')
+        watcher.summoner.by_name(my_region, 'KaiserCrusader') # Needs to change due to the new name implementation
 
     except ApiError:
         # open braves website
@@ -163,7 +163,7 @@ async def connect(connection):
                         nospaces = []
                         ranked_stats = []
                         totalWinrate = 0
-                        nbPlayer = 5
+                        nbPlayer = 4
                         elo = ""
                         rank = ""
                         try:
