@@ -5,6 +5,7 @@ import platform
 import psutil
 import base64
 from os import system, name
+from linkmaker import multi_search
 from lcu_driver import Connector
 from riotwatcher import LolWatcher, ApiError
 import warnings
@@ -12,7 +13,7 @@ warnings.filterwarnings('ignore')
 # global variables
 
 # Needs to be updated every 24 hours
-api_key = 'RGAPI'
+api_key = 'RGAPI-4ace66ee-3d92-4503-907a-08d8eb284ef7'
 watcher = LolWatcher(api_key)
 my_region = 'ph2'
 
@@ -155,7 +156,7 @@ async def connect(connection):
                             # print(r)
 
                         except:
-                            print("la route n'existe plus, logiciel obselète")
+                            print("error getting lobby")
                         nameArr = []
 
                         p_nb += 1
@@ -165,23 +166,12 @@ async def connect(connection):
 
                         if p_nb == 10:
                             print("found 5 players")
-                            print(nameArr)
                             p_nb = 0
+                            links = multi_search(nameArr)
+                            print(links.opgg)
+                            print(links.ugg)
+                            # print(links.deeplolgg)
                             exit(0)
-
-                        # TODO: Make functions per website multi search link
-
-                        # output nameArr
-                        # ['KaiserV#GOW', 'Mikado#khan'] Example
-
-                        # Turn it into a link starting with
-                        # https://www.op.gg/multisearch/ph?summoners=
-                        # Then change the # to %23
-                        # Then change the , to %2C
-                        # Then change the space to +
-
-                        # https://www.op.gg/multisearch/ph?summoners=KaiserV%23GOW%2C+Mikado%23khan
-                        # now change the nameArr to the link
 
     except KeyboardInterrupt:
         print('\n\n* Exiting... *')
