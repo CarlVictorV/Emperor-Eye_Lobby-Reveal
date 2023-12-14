@@ -13,7 +13,7 @@
 - https://riot-watcher.readthedocs.io/en/latest/riotwatcher/LeagueOfLegends/index.html
 - This assumes you have a valid API key
 
-# Documentation of LCU_Driver
+# Documentation of LCU_Driver (Important)
 - https://swagger.dysolix.dev/lcu/#/
 
 # Documentation of Riot Client (Important)

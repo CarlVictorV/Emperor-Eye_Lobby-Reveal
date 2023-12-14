@@ -1,7 +1,6 @@
 import sys
 import requests
 import json
-from time import sleep
 import platform
 import psutil
 import base64
@@ -100,7 +99,7 @@ async def connect(connection):
     #     # open braves website
     #     print("your api key is not valid")
     #     exit(0)
-    print("your api key is valid")
+    # print("your api key is valid")
 
     getLCUName()
     getLCUArguments()
@@ -176,7 +175,7 @@ async def connect(connection):
                         # Then change the , to %2C
                         # Then change the space to +
 
-                        # https://www.op.gg/multisearch/ph?summoners=KaiserV%2C+Mikado%2C+KaiserV%2C+Mikado%2C+KaiserV Example
+                        # https://www.op.gg/multisearch/ph?summoners=KaiserV%23GOW%2C+Mikado%23khan
                         # now change the nameArr to the link
 
     except KeyboardInterrupt:
