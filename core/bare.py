@@ -90,17 +90,6 @@ connector = Connector()
 async def connect(connection):
 
     global showNotInChampSelect
-    # try:  # Needs to have a valid player puuid or summoner name or account id or username and tagline
-    #     # watcher.summoner.by_name(my_region, 'KaiserV')
-    #     watcher.summoner.by_name(my_region, 'Mikado')
-    #     # watcher.summoner.by_puuid(my_region, 'afN65zfuFUsqAo_BbTYZIji8vl9ZgzSBoEgVnckAzgFIoSrxWpOZ2NxlZSD7cguUBlvNV8Ve9AFHfw')
-    #     # watcher.summoner.by_puuid(my_region, '_KkxMDgbYyMEq3Whh2XhXSgBWmp1TSKosgXgsaBURB7-fI7EzEDeP0YjN8mako_RUY2zq_kBgyn5wA')
-
-    # except ApiError:
-    #     # open braves website
-    #     print("your api key is not valid")
-    #     exit(0)
-    # print("your api key is valid")
 
     getLCUName()
     getLCUArguments()
@@ -160,11 +149,83 @@ async def connect(connection):
                         nameArr = []
 
                         p_nb += 1
+                        # Issue found here.
+                        #
+                        # Sometimes the taken participant is more than 5.
+                        # This causes making links and basic structure to fail.
+                        # What causes this?
+                        # This happens when the user/client is having a chat conversation with another player not in the lobby.
+                        # This causes the chat/v5/participants to have more than 5 participants. (7 or more)
+                        # This causes the program to fail.
+
+                        # How to solve? (Temporary)
+                        # Close conversations with other players.
+                        # This will cause the chat/v5/participants to have 5 participants only.
+
+                        # How to solve? (Permanent)
+                        # We need to implement a CID (Conversation ID) checker.
+                        # Due to how the chat/v5/participants works, it will always return the participants of the current conversation.
+                        # may it be a conversation with a player in the lobby or in chat.
+                        # We need to implement a CID checker to check if the conversation is in the lobby or not.
+                        # A pattern found is that the CID of the lobby must have 5 participants.
+                        # While CID of a conversation with a player is only 2. The chatter and the player.
+                        # To olve this we need to find the CID of the lobby and then find the participants of that CID.
+                        # If the participants of the CID is 5 then we can proceed to making links and basic structure.
+                        # If the participants of the CID is less than 5 then we need to find the CID of the lobby again.
+                        # This will loop until the CID of the lobby has 5 participants.
+
+                        # Needs to be tested in Solo/Duo Rank environtment
+                        # Sadly does not work in Co-op vs AI
+                        #
+                        # nameArr = []
+
+                        # cid_counts = {}
+                        # cid_with_5_counts = ''
+                        # for participant in r['participants']:
+                        #     cid = participant['cid']
+                        #     if cid not in cid_counts:
+                        #         cid_counts[cid] = 1
+                        #     else:
+                        #         cid_counts[cid] += 1
+
+                        #     if cid_counts[cid] == 5:
+                        #         cid_with_5_counts = cid
+                        #         break
+
+                        # if cid_with_5_counts == '':
+                        #     # Find the CID with atleast more than 2 participants.
+                        #     cid_with_5_counts = list(cid_counts.keys())[0]
+                        #     for cid in cid_counts:
+                        #         if cid_counts[cid] > 2:
+                        #             cid_with_5_counts = cid
+                        #             break
+
+                        # for i in r:
+                        #     if i['cid'] == cid_with_5_counts:
+                        #         nameArr.append(i['game_name'] +
+                        #                         "#" + i['game_tag'])
+
+                        # Another possible solution but needs testing.
+                        # From further testing champ-select lobbies have 'Riot' for 'activePlatform' while chat lobbies have 'None' for 'activePlatform'
+                        # This can be used to filter out the participants of the lobby.
+                        # This will cause the program to still work even if the user has a conversation with other players.
+
+                        # for i in r['participants']:
+                        #     if i['activePlatform'] is not 'None' and i['activePlatform'] is 'Riot':
+                        #         nameArr.append(
+                        #             i['game_name'] + "#" + i['game_tag'])
+
+                        # This assumes that the user has no conversation with other players.
+                        # This will cause the program to fail if the user has a conversation with other players.
+                        # Unless the user has a conversation with other players in the lobby then it still works
+                        # but if the user has a conversation with other players not in the lobby then it will fail.
+
                         for i in r['participants']:
                             nameArr.append(i['game_name'] +
                                            "#" + i['game_tag'])
+                        print(nameArr)
 
-                        if p_nb == 10:
+                        if p_nb == 5:
                             print("found 5 players")
                             p_nb = 0
                             links = multi_search(nameArr)
