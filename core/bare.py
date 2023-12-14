@@ -12,7 +12,7 @@ warnings.filterwarnings('ignore')
 # global variables
 
 # Needs to be updated every 24 hours
-api_key = 'RGAPI-4ace66ee-3d92-4503-907a-08d8eb284ef7'
+api_key = 'RGAPI'
 watcher = LolWatcher(api_key)
 my_region = 'ph2'
 
@@ -151,8 +151,8 @@ async def connect(connection):
                             r = requests.get(
                                 get_lobby, headers=riotclient_headers, verify=False)
                             r = json.loads(r.text)
-                            print("/chat/v5/participants")
-                            print(r)
+                            # print("/chat/v5/participants")
+                            # print(r)
 
                         except:
                             print("la route n'existe plus, logiciel obselète")
@@ -169,6 +169,11 @@ async def connect(connection):
                             p_nb = 0
                             exit(0)
 
+                        # TODO: Make functions per website multi search link
+
+                        # output nameArr
+                        # ['KaiserV#GOW', 'Mikado#khan'] Example
+
                         # Turn it into a link starting with
                         # https://www.op.gg/multisearch/ph?summoners=
                         # Then change the # to %23
@@ -184,15 +189,3 @@ async def connect(connection):
 
 
 connector.start()
-
-
-def check_lobby_exist(lcu_api, lcu_headers):
-    get_champ_select = lcu_api + '/lol-champ-select/v1/session'
-    r = requests.get(get_champ_select,
-                     headers=lcu_headers, verify=False)
-    r = json.loads(r.text)
-    if 'errorCode' in r:
-        checkForLobby = True
-        if showNotInChampSelect:
-            print('Not in champ select. Waiting for game...')
-            showNotInChampSelect = False
