@@ -7,15 +7,19 @@ import base64
 from os import system, name
 from linkmaker import multi_search
 from lcu_driver import Connector
-from riotwatcher import LolWatcher, ApiError
+from riotwatcher import LolWatcher, ApiError, RiotWatcher, Handlers
 import warnings
 warnings.filterwarnings('ignore')
 # global variables
 
 # Needs to be updated every 24 hours
-api_key = 'RGAPI-4ace66ee-3d92-4503-907a-08d8eb284ef7'
+api_key = 'RGAPI-3d89a098-93f3-40bf-b817-68cf2377da1b'
 watcher = LolWatcher(api_key)
+ratelim = Handlers.RateLimit.BasicRateLimiter()
+deserializer = Handlers.DictionaryDeserializer()
+account = RiotWatcher(api_key, 60, ratelim, deserializer)
 my_region = 'ph2'
+my_area = 'asia'
 
 app_port = None
 auth_token = None
@@ -89,6 +93,8 @@ connector = Connector()
 @connector.ready
 async def connect(connection):
 
+    global showNotInChampSelect
+
     getLCUName()
     getLCUArguments()
 
@@ -118,57 +124,43 @@ async def connect(connection):
     check = riotclient_api + check
     r = requests.get(check, headers=riotclient_headers, verify=False)
     r = json.loads(r.text)
-    print(r)
+    
+    if r == '':
+        print("You are not logged in")
+        exit(0)
+    else:
+        current_gamename = r['gameName']
+        current_tagline = r['tagLine']
+        current_summoner = current_gamename + "#" + current_tagline
+        print("You are logged in as " + current_summoner)
 
-    # p_nb = 0
-    # try:
-    #     checkForLobby = True
-    #     while True:
-    #         nameArr = []
-    #         get_champ_select = lcu_api + '/lol-champ-select/v1/session'
-    #         r = requests.get(get_champ_select,
-    #                          headers=lcu_headers, verify=False)
-    #         r = json.loads(r.text)
-    #         if 'errorCode' in r:
-    #             checkForLobby = True
-    #             if showNotInChampSelect:
-    #                 print('Not in champ select. Waiting for game...')
-    #                 showNotInChampSelect = False
-    #         else:
-    #             if checkForLobby:
-    #                 clear()
-    #                 print('\n* Found lobby. *\n')
-    #                 while 1:
-    #                     try:
-    #                         print("trying to get lobby")
-    #                         get_lobby = riotclient_api + '/chat/v5/participants'
-    #                         r = requests.get(
-    #                             get_lobby, headers=riotclient_headers, verify=False)
-    #                         r = json.loads(r.text)
-    #                         # print("/chat/v5/participants")
-    #                         # print(r)
+    
+    try:
+        account_dto = account._account.by_riot_id(my_area, current_gamename, current_tagline)
+    except ApiError:
+        print("your api key is not valid")
+        exit(0)
+    print("your api key is valid")
+    print(account_dto)
+    get_summoner_details = watcher.summoner.by_puuid(my_region, account_dto['puuid'])
+    print(get_summoner_details)
+    get_ranked_stats = watcher.league.by_summoner(my_region, get_summoner_details['id'])
+    print(get_ranked_stats)
 
-    #                     except:
-    #                         print("error getting lobby")
-    #                     nameArr = []
+    for j in get_ranked_stats:
+        if j['queueType'] == 'RANKED_SOLO_5x5':
+            print(j['tier'] + " " + j['rank'])
+            print(j['leaguePoints'])
+            print(j['wins'])
+            print(j['losses'])
+            print(j['veteran'])
+            print(j['inactive'])
+            print(j['freshBlood'])
+            print(j['hotStreak'])
 
-    #                     p_nb += 1
-    #                     for i in r['participants']:
-    #                         nameArr.append(i['game_name'] +
-    #                                        "#" + i['game_tag'])
+    # ranked_stats = watcher.league.by_id
 
-    #                     if p_nb == 10:
-    #                         print("found 5 players")
-    #                         p_nb = 0
-    #                         links = multi_search(nameArr)
-    #                         print(links.opgg)
-    #                         print(links.ugg)
-    #                         # print(links.deeplolgg)
-    #                         exit(0)
 
-    # except KeyboardInterrupt:
-    #     print('\n\n* Exiting... *')
-    #     sys.exit(0)
 
 
 connector.start()

@@ -90,7 +90,8 @@ async def connect(connection):
 
     global showNotInChampSelect
     try:
-        watcher.summoner.by_name(my_region, 'KaiserCrusader') # Needs to change due to the new name implementation
+        # Needs to change due to the new name implementation
+        watcher.summoner.by_name(my_region, 'KaiserCrusader')
 
     except ApiError:
         # open braves website
