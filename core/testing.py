@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore')
 # global variables
 
 # Needs to be updated every 24 hours
-api_key = 'RGAPI-3d89a098-93f3-40bf-b817-68cf2377da1b'
+api_key = 'RGAPI-fc2bbfb7-2464-4968-bdb1-f29b0e031326'
 watcher = LolWatcher(api_key)
 ratelim = Handlers.RateLimit.BasicRateLimiter()
 deserializer = Handlers.DictionaryDeserializer()
@@ -120,11 +120,11 @@ async def connect(connection):
         'Authorization': 'Basic ' + riotclient_session_token
     }
 
-    get_lobby = riotclient_api + '/chat/v5/participants'
-    r = requests.get(
-        get_lobby, headers=riotclient_headers, verify=False)
-    r = json.loads(r.text)
-    print(r)
+    # get_lobby = riotclient_api + '/chat/v5/participants'
+    # r = requests.get(
+    #     get_lobby, headers=riotclient_headers, verify=False)
+    # r = json.loads(r.text)
+    # print(r)
 
     # check = '/player-account/aliases/v1/display-name'
     # check = riotclient_api + check
@@ -140,17 +140,17 @@ async def connect(connection):
     #     current_summoner = current_gamename + "#" + current_tagline
     #     print("You are logged in as " + current_summoner)
 
-    # try:
-    #     account_dto = account._account.by_riot_id(my_area, current_gamename, current_tagline)
-    # except ApiError:
-    #     print("your api key is not valid")
-    #     exit(0)
-    # print("your api key is valid")
-    # print(account_dto)
-    # get_summoner_details = watcher.summoner.by_puuid(my_region, account_dto['puuid'])
-    # print(get_summoner_details)
-    # get_ranked_stats = watcher.league.by_summoner(my_region, get_summoner_details['id'])
-    # print(get_ranked_stats)
+    try:
+        account_dto = account._account.by_riot_id(my_area, "KaiserV", "GOW")
+    except ApiError:
+        print("your api key is not valid")
+        exit(0)
+    print("your api key is valid")
+    print(account_dto)
+    get_summoner_details = watcher.summoner.by_puuid(my_region, account_dto['puuid'])
+    print(get_summoner_details)
+    get_ranked_stats = watcher.league.by_summoner(my_region, get_summoner_details['id'])
+    print(get_ranked_stats)
 
     # for j in get_ranked_stats:
     #     if j['queueType'] == 'RANKED_SOLO_5x5':

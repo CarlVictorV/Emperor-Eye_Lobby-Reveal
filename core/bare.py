@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore')
 # global variables
 
 # Needs to be updated every 24 hours
-api_key = 'RGAPI-3d89a098-93f3-40bf-b817-68cf2377da1b'
+api_key = 'RGAPI-fc2bbfb7-2464-4968-bdb1-f29b0e031326'
 watcher = LolWatcher(api_key)
 ratelim = Handlers.RateLimit.BasicRateLimiter()
 deserializer = Handlers.DictionaryDeserializer()
@@ -120,8 +120,18 @@ async def connect(connection):
         'Authorization': 'Basic ' + riotclient_session_token
     }
 
+    get_current_summoner = lcu_api + '/lol-summoner/v1/current-summoner'
+    r = requests.get(get_current_summoner,
+                     headers=lcu_headers, verify=False)
+    r = json.loads(r.text)
+    cur_gamename = r['gameName']
+    cur_tagline = r['tagLine']
+    cur_puuid = r['puuid']
+    print(cur_gamename + "#" + cur_tagline)
+
     p_nb = 0
     p_c = 0
+    r_f = False
     try:
         checkForLobby = True
         while True:
@@ -161,16 +171,59 @@ async def connect(connection):
                             if i['activePlatform'] == 'riot':
                                 nameArr.append(i['game_name'] + "#" + i['game_tag'])  # noqa
                                 p_c += 1
+                                r_f = True
 
-                        if p_nb == 5 or p_c == 5:
+                        if (p_nb >= 10 or p_c == 5) and r_f == True:
                             print("found 5 players")
                             p_nb = p_c = 0
                             print(nameArr)
                             links = multi_search(nameArr)
                             print(links.opgg)
                             print(links.ugg)
+                            print("")
                             # print(links.deeplolgg)
+                            try:
+                                ranked_stats = []
+                                for i in nameArr:
+                                    temp_dto = account._account.by_riot_id(
+                                        my_area, i.split("#")[0], i.split("#")[1])
+                                    temp_summoner = watcher.summoner.by_puuid(
+                                        my_region, temp_dto['puuid'])
+                                    try:
+                                        temp_ranked_stats = watcher.league.by_summoner(
+                                            my_region, temp_summoner['id'])
+                                    except KeyError:
+                                        temp_ranked_stats = ['UNRANKED']
+                                    ranked_stats.append(temp_ranked_stats)
+
+                                for i in range(len(nameArr)):
+                                    d = 0
+                                    if ranked_stats[i] == ['UNRANKED'] or ranked_stats[i] == []:
+                                        print(nameArr[i] + " is UNRANKED")
+                                    else:
+                                        for j in range(len(ranked_stats[i])):
+                                            if ranked_stats[i][j]['queueType'] == 'RANKED_SOLO_5x5':
+                                                print(
+                                                    nameArr[i] + " is " + ranked_stats[i][j]['tier'] + " " + ranked_stats[i][j]['rank'] + " " + str(ranked_stats[i][j]['leaguePoints']) + "LP")
+                                                print("Wins: " +
+                                                      str(ranked_stats[i][j]['wins']) + " Losses: " + str(ranked_stats[i][j]['losses']))
+                                                print("Winrate: " + str(
+                                                    round(ranked_stats[i][j]['wins'] / (ranked_stats[i][j]['wins'] + ranked_stats[i][j]['losses']) * 100, 2)) + "%")
+                                                d = 1
+                                                break
+                                        if d == 0:
+                                            print(nameArr[i] + " is UNRANKED")
+                                    print("")
+
+                            except ApiError:
+                                print("API Invalid")
+                                print("Unable to utilize some features")
+
                             exit(0)
+                        else:
+                            p_c = 0
+                            if r_f == True:
+                                p_nb += 1
 
     except KeyboardInterrupt:
         print('\n\n* Exiting... *')
