@@ -7,19 +7,15 @@ import base64
 from os import system, name
 from linkmaker import multi_search
 from lcu_driver import Connector
-from riotwatcher import LolWatcher, ApiError, RiotWatcher, Handlers
+from riotwatcher import LolWatcher, ApiError
 import warnings
 warnings.filterwarnings('ignore')
 # global variables
 
 # Needs to be updated every 24 hours
-api_key = 'RGAPI-fc2bbfb7-2464-4968-bdb1-f29b0e031326'
+api_key = 'RGAPI-4ace66ee-3d92-4503-907a-08d8eb284ef7'
 watcher = LolWatcher(api_key)
-ratelim = Handlers.RateLimit.BasicRateLimiter()
-deserializer = Handlers.DictionaryDeserializer()
-account = RiotWatcher(api_key, 60, ratelim, deserializer)
 my_region = 'ph2'
-my_area = 'asia'
 
 app_port = None
 auth_token = None
@@ -77,7 +73,6 @@ def getLCUArguments():
                     riotclient_app_port = a.split(
                         '--riotclient-app-port=', 1)[1]
 
-
 def clear():
     # for windows
     if name == 'nt':
@@ -87,8 +82,10 @@ def clear():
         _ = system('clear')
 
 
-connector = Connector()
+def on_name_arr_updated(names):
+    return names
 
+connector = Connector()
 
 @connector.ready
 async def connect(connection):
@@ -120,52 +117,57 @@ async def connect(connection):
         'Authorization': 'Basic ' + riotclient_session_token
     }
 
-    # get_lobby = riotclient_api + '/chat/v5/participants'
-    # r = requests.get(
-    #     get_lobby, headers=riotclient_headers, verify=False)
-    # r = json.loads(r.text)
-    # print(r)
+    p_nb = 0
+    try:
+        checkForLobby = True
+        while True:
+            nameArr = []
+            get_champ_select = lcu_api + '/lol-champ-select/v1/session'
+            r = requests.get(get_champ_select,
+                             headers=lcu_headers, verify=False)
+            r = json.loads(r.text)
+            if 'errorCode' in r:
+                checkForLobby = True
+                if showNotInChampSelect:
+                    print('Not in champ select. Waiting for game...')
+                    showNotInChampSelect = False
+            else:
+                if checkForLobby:
+                    clear()
+                    print('\n* Found lobby. *\n')
+                    while 1:
+                        try:
+                            print("trying to get lobby")
+                            get_lobby = riotclient_api + '/chat/v5/participants'
+                            r = requests.get(
+                                get_lobby, headers=riotclient_headers, verify=False)
+                            r = json.loads(r.text)
+                            # print("/chat/v5/participants")
+                            # print(r)
 
-    # check = '/player-account/aliases/v1/display-name'
-    # check = riotclient_api + check
-    # r = requests.get(check, headers=riotclient_headers, verify=False)
-    # r = json.loads(r.text)
+                        except:
+                            print("error getting lobby")
+                        nameArr = []
 
-    # if r == '':
-    #     print("You are not logged in")
-    #     exit(0)
-    # else:
-    #     current_gamename = r['gameName']
-    #     current_tagline = r['tagLine']
-    #     current_summoner = current_gamename + "#" + current_tagline
-    #     print("You are logged in as " + current_summoner)
+                        p_nb += 1
 
-    # try:
-    #     account_dto = account._account.by_riot_id(my_area, "KaiserV", "GOW")
-    # except ApiError:
-    #     print("your api key is not valid")
-    #     exit(0)
-    # print("your api key is valid")
-    # print(account_dto)
-    # get_summoner_details = watcher.summoner.by_puuid(my_region, account_dto['puuid'])
-    # print(get_summoner_details)
-    # get_ranked_stats = watcher.league.by_summoner(my_region, get_summoner_details['id'])
-    # print(get_ranked_stats)
+                        for i in r['participants']:
+                            nameArr.append(i['game_name'] +
+                                           "#" + i['game_tag'])
+                        print(nameArr)
 
-    # for j in get_ranked_stats:
-    #     if j['queueType'] == 'RANKED_SOLO_5x5':
-    #         print(j['tier'] + " " + j['rank'])
-    #         print(j['leaguePoints'])
-    #         print(j['wins'])
-    #         print(j['losses'])
-    #         print(j['veteran'])
-    #         print(j['inactive'])
-    #         print(j['freshBlood'])
-    #         print(j['hotStreak'])
+                        if p_nb == 5:
+                            print("found 5 players")
+                            p_nb = 0
+                            on_name_arr_updated(nameArr)
+                            links = multi_search(nameArr)
+                            # print(links.opgg)
+                            # print(links.ugg)
+                            
+                            exit(0)
 
-    # # ranked_stats = watcher.league.by_id
-
-    rq = lcu_api + '/lol-login/v1/session/invoke?destination=lcdsServiceProxy&method=call&args=["","teambuilder-draft","quitV2",""]'
-    r = requests.post(rq, headers=lcu_headers, verify=False)
+    except KeyboardInterrupt:
+        print('\n\n* Exiting... *')
+        sys.exit(0)
 
 connector.start()

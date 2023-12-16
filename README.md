@@ -66,3 +66,9 @@ Testing RiotWatchers-LCU-RiotClient-API
 
 - You really need to have the Riot Client open for this to work
 - You technically don't need to have League of Legends open for this to work, this could be used for Valorant or TFT or etc. Though again the program is called League of Legends so it would be weird to use it for other games.
+
+# HOW TO GET API KEY FROM RIOT
+
+- https://developer.riotgames.com/
+- Go to this website and login with your Riot Account
+- Paste the API key in the API_KEY variable in the program

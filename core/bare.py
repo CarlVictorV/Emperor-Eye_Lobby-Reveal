@@ -5,7 +5,7 @@ import platform
 import psutil
 import base64
 from os import system, name
-from linkmaker import multi_search
+from linkmaker import multi_search, single_search
 from lcu_driver import Connector
 from riotwatcher import LolWatcher, ApiError, RiotWatcher, Handlers
 import warnings
@@ -181,7 +181,9 @@ async def connect(connection):
                             print(links.opgg)
                             print(links.ugg)
                             print("")
-                            # print(links.deeplolgg)
+                            individual = single_search(nameArr)
+                            individual.opgg()
+                            print(individual.opgg)
                             try:
                                 ranked_stats = []
                                 for i in nameArr:

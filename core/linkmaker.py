@@ -122,9 +122,8 @@ class single_search:
             link += i.replace(' ', '+').replace('#', '-')
             self.leagueofgraphs.append(link)
 
-
     def lolalytics(self):
-            
+
         self.lolalytics = []
         for i in self.nameArr:
             link = 'https://xdx.gg/'
@@ -132,14 +131,17 @@ class single_search:
             self.lolalytics.append(link)
 
     def porogg(self):
-    
+
         self.porogg = []
         for i in self.nameArr:
             link = 'https://poro.gg/summoner/ph/'
             link += i.replace(' ', '%20').replace('#', '-')
             self.porogg.append(link)
 
-    
+    def live_link(self, get_current_summoner):
+        link = 'https://porofessor.gg/live/ph/'
+        link += get_current_summoner.replace(' ', '+').replace('#', '%23')
+        self.live_link = link
 
 
 if __name__ == '__main__':
@@ -148,6 +150,6 @@ if __name__ == '__main__':
     # test = multi_search(nameArr)
     # print(test.deeplolgg)
 
-    # test = single_search(nameArr)
-    # test.lolalytics()
-    # print(test.lolalytics)
+    test = single_search(nameArr)
+    test.opgg()
+    print(test.opgg)
