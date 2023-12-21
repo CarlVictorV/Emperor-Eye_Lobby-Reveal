@@ -1,74 +1,91 @@
-# RiotWatcher-LCU-RiotClient-API-Practice
+# Emperor Eye - Lobby Reveal
 
-Testing RiotWatchers-LCU-RiotClient-API
+``Reveals Hidden Names During Champ Select``
 
-# Requirements
+## Table of Contents
 
-- Submit a record of the demonstration of your application.
+- [Emperor Eye - Lobby Reveal](#emperor-eye---lobby-reveal)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Contributing](#contributing)
+  - [FAQ](#faq)
 
-- Submit a PDF document containing documentation about your system. Follow the same formatting used from your previous WebDev2 subject. Make sure that you highlight the problem you're trying to solve/solution you're trying to improve.
+## Introduction
 
-- Submit a link to your github repositories and with proper readme.md files for me to test and replicate your system.
+In the competitive world of League of Legends, the champion select phase presents a challenge: hidden names of allied players. Our solution, the Emperor Eye Program, unveils concealed names during this critical phase. It's a specialized tool that reveals hidden player identities, connecting users to third-party websites like OP.GG and U.GG. This integration equips players with comprehensive profiles and stats, empowering them to make informed decisions during champion selection.
 
-# Documentation
+The benefits are clear: access to hidden player names and third-party links offers insights into allies' playstyles and track records. Armed with this information, users can decide whether to proceed with a match or strategically dodge. Emperor Eye fosters a more informed and strategic gaming environment, allowing players to tailor their experience based on their preferences and expectations.
 
-- Asked from a friend who was taking webdev2 at the time. He gave me a copy of this documentation. I don't know if this is what the professor wanted but this is what I got.
-- https://docs.google.com/document/d/1rdwhAMr4NXFnXc8S1wLS2ELAhm_mEkydcTq4cKp9nNQ/edit#heading=h.dywidl7odf4x
+## Features
 
-# Imports
+- Shows the Hidden Names
+- Multi Search Using 3rd Party Websites (OP.gg & U.gg)
+- Individual Search Functionality (OP.GG, U.gg, and etc.)
 
-- lcu_driver
-- requests
-- riotwatcher
-- json
-- platform
-- psutil
-- base64
-- warnings
+## Installation
+Must follow the steps below
 
-# Hardest Part :skull:
 
-- Download Riot Client :skull:
-- Download League of Legends :skull:
+- Pre-requisites
+  - Python 
+  - Can run League of Legends
+  - Any currently used Operating System
+    - Windows
+    - Mac
+    - Linux
+- Installation steps
+  - Import necessary modules
+    - lcu_driver
+    - riotwatcher
+    - requests
+    - psutil
+    - base64
+    - tkinter 
+    - ttkbootstrap
+  - Hardest Part :skull:
+      - Download Riot Client :skull:
+      - Download League of Legends :skull:
 
-# Documentation of RiotWatcher
+## Usage
 
-- https://riot-watcher.readthedocs.io/en/latest/riotwatcher/LeagueOfLegends/index.html
-- This assumes you have a valid API key
-- This is basically a wrapper for the Riot API
-- https://developer.riotgames.com/apis
-- Technially this is not needed but this would have been a good feature to use and not rely on other websites to get the data. Like OP.GG or etc.
+While League of Legends and Riot Client is running run ``main.py``
 
-# Documentation of LCU_Driver (Important)
+- Usage examples
+  - Main Purpose is again Solo/Duo champ-select where names are hidden. However, it still can be used for any champ-select lobby
+- API documentation
+  - (Riot Client) https://riotclient.kebs.dev/#operation--GET%20/chat/v5/participants
+  - (Riot Watcher) https://riot-watcher.readthedocs.io/en/latest/riotwatcher/LeagueOfLegends/index.html
+  - (LCU) https://swagger.dysolix.dev/lcu/#/
+- Screenshots
+![Example](src/gui.png)
 
-- https://swagger.dysolix.dev/lcu/#/
-- The important part is simply /lol-champ-select/v1/session as it is the only way to know if you are in a champ select or not
-- Other than that there might be other use for the LCU. 
+## Contributing
 
-# Documentation of Riot Client (Important)
+This project is generally for PH2, there are many things you could improve such as removing the GUI and focus on minimal and sleek design. If you want to improve this I suggest to start in ``core.py`` and go on from their.
 
-- https://riotclient.kebs.dev/#operation--GET%20/chat/v5/participants
-- The important part is simply /chat/v5/participants as it is the only way to see who is in your lobby hidden or not
+- How to report issues
+  - You can utilize github
+- Questions?
+  - Contact me
+- Code of conduct
+  - The more poeple who use this the more inclined RiotGames to fix the issue.
 
-# Testing
+## FAQ
+General ``Frequently Asked Questions``
 
-- To test if the program is working you can simply play a game of League of Legends
-- Specifically try Custom Games, Co-op vs AI, and of course it's main purpose Ranked Solo/Duo (advisable to use a smurf account unless you want to lose LP)
+- Can this get me banned?
+  - No, but when you paste the names in chat and act like an asshole yes.
+- Can I copy this and improve upon it?
+  - Yes
+- Will this work even after the new name changes?
+  - Yes, in fact it was created for that purpose
+- What OS does this work on? 
+  - Works for Windows, Mac and Linux 
+- Is this a virus?
+  - No
+- Will this delete system34?
+  - No, you can check. There is only 5 python files.
 
-# How to Use
-
-- Play a game of League of Legends (Ranked Solo/Duo)
-- Run the program (before or during champ select)
-- Program will show you who is in your lobby
-- Program will also give out links to OP.GG for each player in your lobby
-
-# Important Notes
-
-- You really need to have the Riot Client open for this to work
-- You technically don't need to have League of Legends open for this to work, this could be used for Valorant or TFT or etc. Though again the program is called League of Legends so it would be weird to use it for other games.
-
-# HOW TO GET API KEY FROM RIOT
-
-- https://developer.riotgames.com/
-- Go to this website and login with your Riot Account
-- Paste the API key in the API_KEY variable in the program

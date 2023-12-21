@@ -89,7 +89,6 @@ connector = Connector()
 @connector.ready
 async def connect():
     global showNotInChampSelect
-    nameArr = []
     getLCUName()
     getLCUArguments()
 
@@ -114,7 +113,19 @@ async def connect():
         'User-Agent': 'LeagueOfLegendsClient',
         'Authorization': 'Basic ' + riotclient_session_token
     }
+    
+    get_current_summoner = lcu_api + '/lol-summoner/v1/current-summoner'
+    r = requests.get(get_current_summoner,
+                     headers=lcu_headers, verify=False)
+    r = json.loads(r.text)
+    cur_gamename = r['gameName']
+    cur_tagline = r['tagLine']
+    clear()
+    print("WELCOME TO EMPEROR EYE")
+    print("Current Summoner: ", cur_gamename + "#" + cur_tagline)
+    
 
+    foundRiotClient = False
     p_nb = 0
     try:
         checkForLobby = True
@@ -140,23 +151,24 @@ async def connect():
                             r = requests.get(
                                 get_lobby, headers=riotclient_headers, verify=False)
                             r = json.loads(r.text)
-                            print(r)
 
                         except:
                             print("error getting lobby")
 
-                        p_nb += 1
                         nameArr = []
                         for i in r['participants']:
-                            print(i)
                             if i['activePlatform'] == 'riot':
                                 nameArr.append(i['game_name'] +
                                 "#" + i['game_tag'])
-                                print(i['game_name'] + "#" + i['game_tag'])
+                                foundRiotClient = True
+                                p_nb += 1
                             
-                        if p_nb == 5 or len(nameArr) == 5:
-                            print("found 5 players wtf")
-                            print(nameArr)
+                        if (foundRiotClient and p_nb == 10) or (foundRiotClient and p_nb == 5):
+                            print("Opening GUI...")
+                            # Clean up the name array
+                            # make sure names have no duplicates
+                            nameArr = list(dict.fromkeys(nameArr))
+                            
                             on_name_arr_updated(nameArr)    
                             return    
 
@@ -166,5 +178,4 @@ async def connect():
 
 
 if __name__ == "__main__":
-    clear()
     asyncio.run(connect())

@@ -56,8 +56,10 @@ def run_gui(nameArrz):
     root.title("Emperor Eye")
     root.geometry('600x800')
     root.resizable(True, True)
-    # root.iconbitmap('final/dd.ico')
-    image = tk.Image("photo", file="final/dd.png")
+    # Windows
+    # root.iconbitmap('src/dd.ico')
+    # Mac
+    image = tk.Image("photo", file="src/dd.png")
     root.tk.call('wm', 'iconphoto', root._w, image)
  
     # Frames for different states
