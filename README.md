@@ -5,13 +5,13 @@
 ## Table of Contents
 
 - [Emperor Eye - Lobby Reveal](#emperor-eye---lobby-reveal)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Features](#features)
-  - [Installation](#installation)
-  - [Usage](#usage)
-  - [Contributing](#contributing)
-  - [FAQ](#faq)
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [FAQ](#faq)
 
 ## Introduction
 
