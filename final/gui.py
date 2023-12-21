@@ -56,8 +56,10 @@ def run_gui(nameArrz):
     root.title("Emperor Eye")
     root.geometry('600x800')
     root.resizable(True, True)
-    root.iconbitmap('final\dd.ico')
-
+    # root.iconbitmap('final/dd.ico')
+    image = tk.Image("photo", file="final/dd.png")
+    root.tk.call('wm', 'iconphoto', root._w, image)
+ 
     # Frames for different states
     data_frame = tk.Frame(root)
 
@@ -107,4 +109,4 @@ def run_gui(nameArrz):
     root.mainloop()
     
 if __name__ == "__main__":
-    run_gui()
+    run_gui(nameArrz=['test1', 'test2', 'test3'])

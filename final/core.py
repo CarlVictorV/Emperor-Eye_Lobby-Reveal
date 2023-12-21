@@ -81,14 +81,13 @@ def clear():
 
 def on_name_arr_updated(names):
     data_container.update_test(names)
-    fuck = data_container.updated_test()
-    print("i am now updated:", fuck)
+    data = data_container.updated_test()
+    print("i am now updated:", data)
 
 connector = Connector()
 
 @connector.ready
 async def connect():
-    print("hi bare")
     global showNotInChampSelect
     nameArr = []
     getLCUName()
@@ -141,6 +140,7 @@ async def connect():
                             r = requests.get(
                                 get_lobby, headers=riotclient_headers, verify=False)
                             r = json.loads(r.text)
+                            print(r)
 
                         except:
                             print("error getting lobby")
@@ -148,14 +148,17 @@ async def connect():
                         p_nb += 1
                         nameArr = []
                         for i in r['participants']:
+                            print(i)
                             if i['activePlatform'] == 'riot':
                                 nameArr.append(i['game_name'] +
                                 "#" + i['game_tag'])
+                                print(i['game_name'] + "#" + i['game_tag'])
                             
                         if p_nb == 5 or len(nameArr) == 5:
-                            print("found 5 players")
+                            print("found 5 players wtf")
+                            print(nameArr)
                             on_name_arr_updated(nameArr)    
-                        return    
+                            return    
 
     except KeyboardInterrupt:
         print('\n\n* Exiting... *')
@@ -163,4 +166,5 @@ async def connect():
 
 
 if __name__ == "__main__":
+    clear()
     asyncio.run(connect())
