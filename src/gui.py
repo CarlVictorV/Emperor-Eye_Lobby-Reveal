@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import ttkbootstrap as ttkbs
 from ttkbootstrap.constants import *
+import os
 
 # from bare import connector, on_name_arr_updated
 
@@ -56,11 +57,14 @@ def run_gui(nameArrz):
     root.title("Emperor Eye")
     root.geometry('600x800')
     root.resizable(True, True)
-    # Windows
-    # root.iconbitmap('src/dd.ico')
-    # Mac
-    image = tk.Image("photo", file="src/dd.png")
-    root.tk.call('wm', 'iconphoto', root._w, image)
+    
+    if os.name == 'nt':
+        # Windows
+        root.iconbitmap('src\dd.ico')
+    else:
+        # Mac/Linux
+        image = tk.Image("photo", file="src/dd.png")
+        root.tk.call('wm', 'iconphoto', root._w, image)
  
     # Frames for different states
     data_frame = tk.Frame(root)
